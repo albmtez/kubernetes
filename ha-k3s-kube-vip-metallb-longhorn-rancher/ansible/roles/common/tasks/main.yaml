@@ -1,0 +1,45 @@
+---
+- name: Add all hosts to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{ hostvars[item]['ansible_host'] }} {{item}}"
+    state: present
+  with_items: "{{ groups['all'] }}"
+
+- name: Add all hosts to /etc/cloud/templates/hosts.debian.tmpl used to generate /etc/hosts file after reboots
+  lineinfile:
+    dest: /etc/cloud/templates/hosts.debian.tmpl
+    regexp: '.*{{ item }}$'
+    line: "{{ hostvars[item]['ansible_host'] }} {{item}}"
+    state: present
+  with_items: "{{ groups['all'] }}"
+
+- name: Sudo passwordless for {{ cluster_user }} user
+  lineinfile:
+    dest: /etc/sudoers
+    line: '{{ cluster_user }} ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Add contrib and non-free repositories
+  replace:
+    dest: /etc/apt/sources.list
+    regexp: '^(deb.+)(?<! contrib non-free)$'
+    replace: '\1 contrib non-free'
+
+- name: Packages update
+  apt:
+    upgrade: dist
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+
+- name: Install ntp package
+  apt:
+    name: ntp
+    state: present
+
+- name: Install curl package
+  apt:
+    name: curl
+    state: present
