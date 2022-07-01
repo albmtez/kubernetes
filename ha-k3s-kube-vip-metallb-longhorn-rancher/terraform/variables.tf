@@ -45,17 +45,17 @@ variable "k3s_server_nodes" {
   description = "Server nodes settings"
 }
 
-variable "k3s_worker_nodes" {
+variable "k3s_agent_nodes" {
   type = map
   default = {
     "count"     = 3
     "vmid"      = 404
-    "name"      = "k3s-worker-node"
+    "name"      = "k3s-agent-node"
     "template"  = "template-debian-11"
     "cores"     = 2
     "memory"    = 4096
     "disk_size" = "50G"
   }
-  description = "Worker nodes settings"
+  description = "Agent nodes settings"
 }
 

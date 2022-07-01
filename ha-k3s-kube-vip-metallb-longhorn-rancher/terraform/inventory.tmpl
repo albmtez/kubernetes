@@ -3,8 +3,8 @@
 ${node.name} ansible_host=${node.default_ipv4_address}
 %{ endfor ~}
 
-[k3s_workers]
-%{ for node in k3s_workers_inventory ~}
+[k3s_agents]
+%{ for node in k3s_agents_inventory ~}
 ${node.name} ansible_host=${node.default_ipv4_address}
 %{ endfor ~}
 
